@@ -32,6 +32,7 @@ Game::Game() :
 {
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
+	setupScene();
 }
 
 /// <summary>
@@ -105,9 +106,11 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
-	m_window.clear(sf::Color::White);
-	m_window.draw(m_welcomeMessage);
-	m_window.draw(m_logoSprite);
+	m_window.clear(sf::Color::Black); // change's the window to black
+	m_window.draw(m_ground); // draws the ground
+	m_window.draw(m_cannon); // draws the cannon
+	//m_window.draw(m_welcomeMessage);
+	//m_window.draw(m_logoSprite);
 	m_window.display();
 }
 
@@ -143,4 +146,18 @@ void Game::setupSprite()
 	}
 	m_logoSprite.setTexture(m_logoTexture);
 	m_logoSprite.setPosition(300.0f, 180.0f);
+}
+
+
+void Game::setupScene()
+{
+	//setup for the ground
+	m_ground.setSize(sf::Vector2f (800, 50)); // set size of the rectangle
+	m_ground.setPosition(0, 550); // set the position
+	m_ground.setFillColor(sf::Color::Green); // set the colour
+	//setup for the cannons 
+	m_cannon.setSize(sf::Vector2f(50, 50)); // set size of the rectangle
+	m_cannon.setPosition(375, 500); // set the position
+	m_cannon.setFillColor(sf::Color::Yellow); // set the colour
+
 }

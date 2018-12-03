@@ -34,6 +34,7 @@ private:
 	void processEvents();
 	void update(sf::Time t_deltaTime);
 	void render();
+	void setupScene();
 
 	void setupFontAndText();
 	void setupSprite();
@@ -43,6 +44,8 @@ private:
 	sf::Text m_welcomeMessage; // text used for message on screen
 	sf::Texture m_logoTexture; // texture used for sfml logo
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
+	sf::RectangleShape m_ground; // shape of the ground
+	sf::RectangleShape m_cannon; // shape of the cannon
 	bool m_exitGame; // control exiting game
 
 };
