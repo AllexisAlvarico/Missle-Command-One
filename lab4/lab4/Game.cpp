@@ -109,8 +109,8 @@ void Game::render()
 	m_window.clear(sf::Color::Black); // change's the window to black
 	m_window.draw(m_ground); // draws the ground
 	m_window.draw(m_cannon); // draws the cannon
-	//m_window.draw(m_welcomeMessage);
-	//m_window.draw(m_logoSprite);
+	//m_window.draw(m_welcomeMessage); // Note hideden it 
+	//m_window.draw(m_logoSprite); // Note hideden it
 	m_window.display();
 }
 

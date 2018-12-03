@@ -48,7 +48,7 @@ private:
 	sf::RectangleShape m_cannon; // shape of the cannon
 	bool m_exitGame; // control exiting game
 
-};
+}
 
 #endif // !GAME
 
