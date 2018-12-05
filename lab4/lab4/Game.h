@@ -31,10 +31,11 @@ public:
 
 private:
 
-	void processEvents();
+	void processEvents(); 
 	void update(sf::Time t_deltaTime);
-	void render();
-	void setupScene();
+	void render(); 
+	void setupScene(); // sets up the scene
+	void processMouseEvents(sf::Event t_mouseEvent);
 
 	void setupFontAndText();
 	void setupSprite();
@@ -46,9 +47,14 @@ private:
 	sf::Sprite m_logoSprite; // sprite used for sfml logo
 	sf::RectangleShape m_ground; // shape of the ground
 	sf::RectangleShape m_cannon; // shape of the cannon
+	sf::Vector2i m_mouseClick{ 0,0 }; // location of 1st mouse
+	sf::VertexArray m_line{ sf::Lines }; // line to be drawn
+	int m_mouseClicks = 0; //The number of mouse clicks
+	int m_xCoord1 = 0; //The co-ordinates of X
+	int m_yCoord1 = 0; //The co-ordinates of Y 
 	bool m_exitGame; // control exiting game
 
-}
+};
 
 #endif // !GAME
 

@@ -33,6 +33,7 @@ Game::Game() :
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupScene();
+
 }
 
 /// <summary>
@@ -61,6 +62,9 @@ void Game::run()
 			processEvents(); // at least 60 fps
 			update(timePerFrame); //60 fps
 		}
+
+
+
 		render(); // as many as possible
 	}
 }
@@ -86,6 +90,10 @@ void Game::processEvents()
 				m_exitGame = true;
 			}
 		}
+		if (sf::Event::MouseButtonPressed == event.type)
+		{
+			processMouseEvents(event); // when mouse is clicked
+		}
 	}
 }
 
@@ -109,6 +117,7 @@ void Game::render()
 	m_window.clear(sf::Color::Black); // change's the window to black
 	m_window.draw(m_ground); // draws the ground
 	m_window.draw(m_cannon); // draws the cannon
+	m_window.draw(m_line); // Draws the line
 	//m_window.draw(m_welcomeMessage); // Note hideden it 
 	//m_window.draw(m_logoSprite); // Note hideden it
 	m_window.display();
@@ -159,5 +168,32 @@ void Game::setupScene()
 	m_cannon.setSize(sf::Vector2f(50, 50)); // set size of the rectangle
 	m_cannon.setPosition(375, 500); // set the position
 	m_cannon.setFillColor(sf::Color::Yellow); // set the colour
+
+}
+
+void Game::processMouseEvents(sf::Event t_mouseEvent)
+{
+	sf::Vertex lineStart{}; // start point of line
+	sf::Vertex lineEnd{}; // end point of line
+	sf::Vector2f mouseClick{}; // location of mouse click
+	if (sf::Mouse::Left == t_mouseEvent.mouseButton.button)
+	{
+			mouseClick = sf::Vector2f{ 400,500 }; // sets the base of the line on the cannon
+			lineStart = sf::Vertex{ mouseClick , sf::Color::Red }; // the line is red
+			m_line.append(lineStart); // Where the line is starts
+
+		if (m_mouseClicks == 0)
+		{
+			mouseClick = sf::Vector2f{ static_cast<float>(t_mouseEvent.mouseButton.x),static_cast<float>(t_mouseEvent.mouseButton.y) }; // the clicked's position in x and y axis 
+			lineEnd = sf::Vertex{ mouseClick, sf::Color::Red }; // the line is red
+			m_line.append(lineEnd); // where the user clicked on the window
+			m_mouseClicks++; // increments it 
+		}
+		else if (m_mouseClicks == 1) //The amount of clicks done do this
+		{
+			m_mouseClicks = 0; // reset the clicks
+			m_line.clear(); // clears the line after the click
+		}
+	}
 
 }
