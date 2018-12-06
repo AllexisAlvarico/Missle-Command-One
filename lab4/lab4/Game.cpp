@@ -33,6 +33,7 @@ Game::Game() :
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupScene();
+	powerBar();
 	
 }
 
@@ -103,6 +104,9 @@ void Game::processEvents()
 /// <param name="t_deltaTime">time interval per frame</param>
 void Game::update(sf::Time t_deltaTime)
 {
+	powerBar(); // calls the function to update
+
+
 	if (m_exitGame)
 	{
 		m_window.close();
@@ -118,7 +122,9 @@ void Game::render()
 	m_window.draw(m_ground); // draws the ground
 	m_window.draw(m_cannon); // draws the cannon
 	m_window.draw(m_line); // Draws the line
-	if(exploded) // do this
+	m_window.draw(m_altitudeBar); // draws the bar
+	m_window.draw(m_altitudeText); // text is drawn
+	if(m_exploded) // do this
 	{
 		m_window.draw(m_explodsion); // draws the explodsion
 	}
@@ -136,14 +142,21 @@ void Game::setupFontAndText()
 	{
 		std::cout << "problem loading arial black font" << std::endl;
 	}
-	m_welcomeMessage.setFont(m_ArialBlackfont);
-	m_welcomeMessage.setString("SFML Game");
-	m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
-	m_welcomeMessage.setPosition(40.0f, 40.0f);
-	m_welcomeMessage.setCharacterSize(80);
-	m_welcomeMessage.setOutlineColor(sf::Color::Red);
-	m_welcomeMessage.setFillColor(sf::Color::Black);
-	m_welcomeMessage.setOutlineThickness(3.0f);
+	//m_welcomeMessage.setFont(m_ArialBlackfont);
+	//m_welcomeMessage.setString("SFML Game");
+	//m_welcomeMessage.setStyle(sf::Text::Underlined | sf::Text::Italic | sf::Text::Bold);
+	//m_welcomeMessage.setPosition(40.0f, 40.0f);
+	//m_welcomeMessage.setCharacterSize(80);
+	//m_welcomeMessage.setOutlineColor(sf::Color::Red);
+	//m_welcomeMessage.setFillColor(sf::Color::Black);
+	//m_welcomeMessage.setOutlineThickness(3.0f);
+
+	m_altitudeText.setFont(m_ArialBlackfont); // set its font
+	m_altitudeText.setString("Altitude: "); // displays the text
+	m_altitudeText.setPosition(10, 555);  // set the position
+	m_altitudeText.setCharacterSize(24); // the character size
+	m_altitudeText.setFillColor(sf::Color::White); // The text's colour
+
 
 }
 
@@ -152,13 +165,13 @@ void Game::setupFontAndText()
 /// </summary>
 void Game::setupSprite()
 {
-	if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
-	{
-		// simple error message if previous call fails
-		std::cout << "problem loading logo" << std::endl;
-	}
-	m_logoSprite.setTexture(m_logoTexture);
-	m_logoSprite.setPosition(300.0f, 180.0f);
+	//if (!m_logoTexture.loadFromFile("ASSETS\\IMAGES\\SFML-LOGO.png"))
+	//{
+	//	// simple error message if previous call fails
+	//	std::cout << "problem loading logo" << std::endl;
+	//}
+	//m_logoSprite.setTexture(m_logoTexture);
+	//m_logoSprite.setPosition(300.0f, 180.0f);
 }
 
 
@@ -175,6 +188,10 @@ void Game::setupScene()
 
 	m_explodsion.setFillColor(sf::Color::Red); // set the colour
 
+	m_altitudeBar.setPosition(125, 560); // sets the position
+	m_altitudeBar.setFillColor(sf::Color::Red); // set the colour
+
+
 }
 
 void Game::processMouseEvents(sf::Event t_mouseEvent)
@@ -190,19 +207,21 @@ void Game::processMouseEvents(sf::Event t_mouseEvent)
 
 		if (m_mouseClicks == 0) // if the clicks is 0
 		{
-			exploded = true; // its set the exploded to true
+			m_exploded = true; // its set the exploded to true
 			mouseClick = sf::Vector2f{ static_cast<float>(t_mouseEvent.mouseButton.x),static_cast<float>(t_mouseEvent.mouseButton.y) }; // the clicked's position in x and y axis 
 			lineEnd = sf::Vertex{ mouseClick, sf::Color::Red }; // the line is red
 			m_xCoord1 = t_mouseEvent.mouseButton.x; // get the coordinates of the x axis
 			m_yCoord1 = t_mouseEvent.mouseButton.y; // get the coordinates of the y axis
 			explodsion(m_xCoord1 , m_yCoord1); // calls the function for the explodsion
 			m_line.append(lineEnd); // where the user clicked on the window
+			m_readyToFire = false; // stops the bar and reset it back 0
 			m_mouseClicks++; // increments it 
 
 		}
 		else if (m_mouseClicks == 1) //The amount of clicks done do this
 		{
-			exploded = false; // set it to false
+			m_exploded = false; // set it to false
+			m_readyToFire = true; // reset the bar
 			m_mouseClicks = 0; // reset the clicks
 			m_line.clear(); // clears the line after the click
 		}
@@ -216,6 +235,30 @@ void Game::explodsion(float t_positionX, float t_postionY) // explodsion that th
 	m_explodsion.setOrigin(40, 40); // set the origin to the centre of the explodsion 
 	m_explodsion.setPosition(t_positionX, t_postionY); // sets the coodinates where the explodsion happens
 
+
+}
+
+void::Game::powerBar()
+{
+	if (m_readyToFire) // if its true
+	{
+
+		if (m_startBar < m_maxBar) // if less than the maximun bar 
+		{
+			m_startBar += 1; // add 1 to it
+		}
+		if (m_startBar == m_maxBar) // if equal to maximun bar
+		{
+			m_startBar += 0; // stops the increase
+		}
+	}
+	else // if the readyTo
+	{
+		m_startBar = 0; // it reset to zero
+	}
+
+
+	m_altitudeBar.setSize(sf::Vector2f(m_startBar,25)); // updates the bar
 
 }
 

@@ -37,26 +37,32 @@ private:
 	void setupScene(); // sets up the scene
 	void processMouseEvents(sf::Event t_mouseEvent); // A laser appears and position itself on the click
 	void explodsion(float t_positionX, float t_postionY); // where the end of the click's position explodes  
+	void powerBar(); // the altitude bar where the range increases for the laser
 
 	void setupFontAndText();
 	void setupSprite();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
-	sf::Text m_welcomeMessage; // text used for message on screen
-	sf::Texture m_logoTexture; // texture used for sfml logo
-	sf::Sprite m_logoSprite; // sprite used for sfml logo
+	//sf::Text m_welcomeMessage; // text used for message on screen
+	sf::Text m_altitudeText; // text for the altitude bar
+	//sf::Texture m_logoTexture; // texture used for sfml logo
+	//sf::Sprite m_logoSprite; // sprite used for sfml logo
 	sf::RectangleShape m_ground; // shape of the ground
 	sf::RectangleShape m_cannon; // shape of the cannon
+	sf::RectangleShape m_altitudeBar; // shape of the altitude bar
 	sf::CircleShape m_explodsion{ 40,40 }; // draws a circle for the explodsion //side note the size is for testing
 	sf::Vector2i m_mouseClick{ 0,0 }; // location of 1st mouse
 	sf::VertexArray m_line{ sf::Lines }; // line to be drawn
 
 	int m_mouseClicks = 0; //The number of mouse clicks
+	float m_maxBar = 600; // The maximium range of the laser
+	float m_startBar = 0; // The starting point of the altitude bar
 	float m_xCoord1 = 0; //The co-ordinates of X
 	float m_yCoord1 = 0; //The co-ordinates of Y 
 	bool m_exitGame; // control exiting game
-	bool exploded = false; // its set to false
+	bool m_readyToFire = true; // when the player clicks 
+	bool m_exploded = false; // its set to false
 
 };
 
