@@ -12,6 +12,7 @@
 /// Session 1 5:00pm to 7:00pm 3rd of December
 /// Session 2 7:30pm to 9:30pm 5th of December
 /// Session 3 9:00am to 10:00am 6th of December
+/// /// Session 4 2:00pm to 5:00pm 6th of December
 /// Actual time: 
 /// Known Bugs: 
 /// None as of now
@@ -38,7 +39,6 @@ private:
 	void processMouseEvents(sf::Event t_mouseEvent); // A laser appears and position itself on the click
 	void explodsion(float t_positionX, float t_postionY); // where the end of the click's position explodes  
 	void powerBar(); // the altitude bar where the range increases for the laser
-
 	void setupFontAndText();
 	void setupSprite();
 
