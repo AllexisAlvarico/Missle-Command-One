@@ -10,8 +10,8 @@
 /// ---------------------------------------------------------
 /// Estinmated time: 5-7 hours
 /// Session 1 5:00pm to 7:00pm 3rd of December
-/// Session 2 
-/// Session 3 
+/// Session 2 7:30pm to 9:30pm 5th of December
+/// Session 3 9:00am to 10:00am 6th of December
 /// Actual time: 
 /// Known Bugs: 
 /// None as of now

@@ -10,8 +10,8 @@
 /// ---------------------------------------------------------
 /// Estinmated time: 5-7 hours
 /// Session 1 5:00pm to 7:00pm 3rd of December
-/// Session 2 
-/// Session 3 
+/// Session 2 7:30pm to 9:30pm 5th of December
+/// Session 3 9:00am to 10:00am 6th of December
 /// Actual time: 
 /// Known Bugs: 
 /// None as of now
@@ -33,7 +33,7 @@ Game::Game() :
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
 	setupScene();
-
+	
 }
 
 /// <summary>
@@ -118,6 +118,10 @@ void Game::render()
 	m_window.draw(m_ground); // draws the ground
 	m_window.draw(m_cannon); // draws the cannon
 	m_window.draw(m_line); // Draws the line
+	if(exploded) // do this
+	{
+		m_window.draw(m_explodsion); // draws the explodsion
+	}
 	//m_window.draw(m_welcomeMessage); // Note hideden it 
 	//m_window.draw(m_logoSprite); // Note hideden it
 	m_window.display();
@@ -169,6 +173,8 @@ void Game::setupScene()
 	m_cannon.setPosition(375, 500); // set the position
 	m_cannon.setFillColor(sf::Color::Yellow); // set the colour
 
+	m_explodsion.setFillColor(sf::Color::Red); // set the colour
+
 }
 
 void Game::processMouseEvents(sf::Event t_mouseEvent)
@@ -182,18 +188,34 @@ void Game::processMouseEvents(sf::Event t_mouseEvent)
 			lineStart = sf::Vertex{ mouseClick , sf::Color::Red }; // the line is red
 			m_line.append(lineStart); // Where the line is starts
 
-		if (m_mouseClicks == 0)
+		if (m_mouseClicks == 0) // if the clicks is 0
 		{
+			exploded = true; // its set the exploded to true
 			mouseClick = sf::Vector2f{ static_cast<float>(t_mouseEvent.mouseButton.x),static_cast<float>(t_mouseEvent.mouseButton.y) }; // the clicked's position in x and y axis 
 			lineEnd = sf::Vertex{ mouseClick, sf::Color::Red }; // the line is red
+			m_xCoord1 = t_mouseEvent.mouseButton.x; // get the coordinates of the x axis
+			m_yCoord1 = t_mouseEvent.mouseButton.y; // get the coordinates of the y axis
+			explodsion(m_xCoord1 , m_yCoord1); // calls the function for the explodsion
 			m_line.append(lineEnd); // where the user clicked on the window
 			m_mouseClicks++; // increments it 
+
 		}
 		else if (m_mouseClicks == 1) //The amount of clicks done do this
 		{
+			exploded = false; // set it to false
 			m_mouseClicks = 0; // reset the clicks
 			m_line.clear(); // clears the line after the click
 		}
 	}
 
 }
+
+void Game::explodsion(float t_positionX, float t_postionY) // explodsion that the circle appears
+{
+
+	m_explodsion.setOrigin(40, 40); // set the origin to the centre of the explodsion 
+	m_explodsion.setPosition(t_positionX, t_postionY); // sets the coodinates where the explodsion happens
+
+
+}
+
