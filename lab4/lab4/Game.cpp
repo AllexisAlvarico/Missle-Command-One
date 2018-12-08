@@ -13,9 +13,11 @@
 /// Session 2 7:30pm to 9:30pm 5th of December
 /// Session 3 9:00am to 10:00am 6th of December
 /// Session 4 2:00pm to 5:00pm 6th of December
+/// Session 5 4:00pm to 7:00pm 7th of December
 /// Actual time: 
 /// Known Bugs: 
-/// None as of now
+/// Explosion draws on the start of the program
+/// Power bar don't reset once fired
 /// </summary>  
 
 
@@ -107,7 +109,7 @@ void Game::processEvents()
 void Game::update(sf::Time t_deltaTime)
 {
 	powerBar(); // calls the function to update
-
+	laserUpdate();
 
 	if (m_exitGame)
 	{
@@ -128,7 +130,7 @@ void Game::render()
 	m_window.draw(m_altitudeText); // text is drawn
 	if(m_exploded) // do this
 	{
-		m_window.draw(m_explodsion); // draws the explodsion
+		m_window.draw(m_explosion); // draws the explodsion
 	}
 	//m_window.draw(m_welcomeMessage); // Note hideden it 
 	//m_window.draw(m_logoSprite); // Note hideden it
@@ -188,7 +190,7 @@ void Game::setupScene()
 	m_cannon.setPosition(375, 500); // set the position
 	m_cannon.setFillColor(sf::Color::Yellow); // set the colour
 
-	m_explodsion.setFillColor(sf::Color::Red); // set the colour
+	m_explosion.setFillColor(sf::Color::Red); // set the colour
 
 	m_altitudeBar.setPosition(125, 560); // sets the position
 	m_altitudeBar.setFillColor(sf::Color::Red); // set the colour
@@ -198,46 +200,60 @@ void Game::setupScene()
 
 void Game::processMouseEvents(sf::Event t_mouseEvent)
 {
-	sf::Vertex lineStart{}; // start point of line
-	sf::Vertex lineEnd{}; // end point of line
-	sf::Vector2f mouseClick{}; // location of mouse click
+	//sf::Vertex lineStart{}; // start point of line
+	//sf::Vertex lineEnd{}; // end point of line
+
 	if (sf::Mouse::Left == t_mouseEvent.mouseButton.button)
 	{
-			mouseClick = sf::Vector2f{ 400,500 }; // sets the base of the line on the cannon
-			lineStart = sf::Vertex{ mouseClick , sf::Color::Red }; // the line is red
-			m_line.append(lineStart); // Where the line is starts
+		//mouseClick = sf::Vector2f{ m_cannonBase }; // sets the base of the line on the cannon
+		//lineStart = sf::Vertex{ mouseClick , sf::Color::Red }; // the line is red
+		//m_line.append(lineStart); // Where the line is starts
 
-		if (m_mouseClicks == 0) // if the clicks is 0
+		//if (m_mouseClicks == 0) // if the clicks is 0
+
+		if(!m_firedLaser) // when clicking do this
 		{
-			m_exploded = true; // its set the exploded to true
-			mouseClick = sf::Vector2f{ static_cast<float>(t_mouseEvent.mouseButton.x),static_cast<float>(t_mouseEvent.mouseButton.y) }; // the clicked's position in x and y axis 
-			lineEnd = sf::Vertex{ mouseClick, sf::Color::Red }; // the line is red
-			m_xCoord1 = t_mouseEvent.mouseButton.x; // get the coordinates of the x axis
-			m_yCoord1 = t_mouseEvent.mouseButton.y; // get the coordinates of the y axis
-			explodsion(m_xCoord1 , m_yCoord1); // calls the function for the explodsion
-			m_line.append(lineEnd); // where the user clicked on the window
+			endPoint = sf::Vector2f{ static_cast<float>(t_mouseEvent.mouseButton.x),static_cast<float>(t_mouseEvent.mouseButton.y) }; // the clicked's position in x and y axis 
+			sf::Vector2f distanceVec = endPoint - m_cannonBase; // gets the distance of the click from the cannon base
+			m_laserVelocity = vectorUnitVector(distanceVec); // gets the unit vector of the distanceVector
+			m_laserPosition = m_cannonBase; // laser's position is on the cannon
+			m_startRadius = 0; // set the explosion's radius to zero
+			//lineEnd = sf::Vertex{ m_laserVec, sf::Color::Red }; // the line is red
+			// calls the function for the explodsion
+			//m_line.append(lineEnd); // where the user clicked on the window
 			m_readyToFire = false; // stops the bar and reset it back 0
-			m_mouseClicks++; // increments it 
+			//m_mouseClicks++; // increments it 
 
 		}
-		else if (m_mouseClicks == 1) //The amount of clicks done do this
-		{
-			m_exploded = false; // set it to false
-			m_readyToFire = true; // reset the bar
-			m_mouseClicks = 0; // reset the clicks
-			m_line.clear(); // clears the line after the click
-		}
+		//else if (m_mouseClicks == 1) //The amount of clicks done do this
+		//{
+		//	m_exploded = false; // set it to false
+		//	m_readyToFire = true; // reset the bar
+		//	m_mouseClicks = 0; // reset the clicks
+		//	//m_line.clear(); // clears the line after the click
+		//}
 	}
 
 }
 
-void Game::explodsion(float t_positionX, float t_postionY) // explodsion that the circle appears
+void Game::explodsion() // explodsion that the circle appears
 {
-
-	m_explodsion.setOrigin(40, 40); // set the origin to the centre of the explodsion 
-	m_explodsion.setPosition(t_positionX, t_postionY); // sets the coodinates where the explodsion happens
-
-
+	 // sets the coodinates where the explodsion happens
+	if (m_exploded) 
+	{
+		if (m_startRadius <= m_maxRadius) // the if the radius is zero
+		{
+			m_startRadius += 0.8f; // increase the size of the radius
+			m_explosion.setRadius(m_startRadius); // set the radius of the explosion
+			m_explosion.setOrigin(m_startRadius, m_startRadius); // set the origin to the centre of the circle
+			m_explosion.setPosition(m_laserPosition); // position it on the click
+		}
+		else
+		{
+			m_startRadius += 0; // stops the increase of the radius
+			m_exploded = false; // set it to false
+		}
+	}
 }
 
 void::Game::powerBar()
@@ -259,8 +275,31 @@ void::Game::powerBar()
 		m_startBar = 0; // it reset to zero
 	}
 
-
 	m_altitudeBar.setSize(sf::Vector2f(m_startBar,25)); // updates the bar
 
 }
 
+
+void::Game::laserUpdate()
+{
+	m_laserPosition += m_laserVelocity * 2.0f; // the speed of the laser drawing
+
+	m_line.append(m_cannonBase); // where the user clicked on the window
+	m_line.append(m_laserPosition); // where the user clicked on the window
+	m_firedLaser = true; // allows the player to fire
+	
+	if (m_laserPosition.y <= endPoint.y) // if the laser reached the same y axis value do this
+	{
+		
+		// its set the exploded to true
+		m_firedLaser = false; // stops the player from firing again
+		m_line.clear(); // clears the laser
+		m_laserPosition = endPoint; // sets the end point of the line 
+		m_exploded = true; // draws the explosion
+		explodsion(); // calls the function
+	}
+	//if (m_laserPosition.y >= endPoint.y) 
+	//{
+	//	m_exploded = true;
+	//}
+}
