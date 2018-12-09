@@ -14,10 +14,11 @@
 /// Session 3 9:00am to 10:00am 6th of December
 /// Session 4 2:00pm to 5:00pm 6th of December
 /// Session 5 4:00pm to 7:00pm 7th of December
+/// Session 6 3:30pm to 6:30pm 9th of December
 /// Actual time: 
 /// Known Bugs: 
-/// Explosion draws on the start of the program
-/// Power bar don't reset once fired
+/// can click and shoot the laser without
+/// waiting till it finished exploded.
 /// </summary>  
 
 #ifdef _DEBUG 
