@@ -110,7 +110,10 @@ void Game::processEvents()
 void Game::update(sf::Time t_deltaTime)
 {
 	powerBar(); // calls the function to update
-	laserUpdate();
+	laserUpdate(); // the laser cannon drawing
+	asteroidUpdate(); // asteroid setup
+	asteroidSpawn(); // asteroid line drawing
+
 
 	if (m_exitGame)
 	{
@@ -127,6 +130,7 @@ void Game::render()
 	m_window.draw(m_ground); // draws the ground
 	m_window.draw(m_cannon); // draws the cannon
 	m_window.draw(m_line); // Draws the line
+	m_window.draw(m_asteriodLine);
 	m_window.draw(m_altitudeBar); // draws the bar
 	m_window.draw(m_altitudeText); // text is drawn
 
@@ -182,14 +186,10 @@ void Game::setupScene()
 	m_cannon.setPosition(375, 500); // set the position
 	m_cannon.setFillColor(sf::Color::Yellow); // set the colour
 
-
-	
-
 	m_explosion.setFillColor(sf::Color::Red); // set the colour
 
 	m_altitudeBar.setPosition(125, 560); // sets the position
 	m_altitudeBar.setFillColor(sf::Color::Red); // set the colour
-	
 
 
 
@@ -203,8 +203,8 @@ void Game::processMouseEvents(sf::Event t_mouseEvent)
 		{
 
 			endPoint = sf::Vector2f{ static_cast<float>(t_mouseEvent.mouseButton.x),static_cast<float>(t_mouseEvent.mouseButton.y) }; // the clicked's position in x and y axis 
-			sf::Vector2f distanceVec = endPoint - m_cannonBase; // gets the distance of the click from the cannon base
-			m_laserVelocity = vectorUnitVector(distanceVec); // gets the unit vector of the distanceVector
+			sf::Vector2f m_distanceVec = endPoint - m_cannonBase; // gets the distance of the click from the cannon base
+			m_laserVelocity = vectorUnitVector(m_distanceVec); // gets the unit vector of the distanceVector
 			m_laserPosition = m_cannonBase; // laser's position is on the cannon
 			m_startRadius = 0; // set the explosion's radius to zero
 			m_exploded = true; // draws the explosion
@@ -212,8 +212,6 @@ void Game::processMouseEvents(sf::Event t_mouseEvent)
 	}
 
 }
-
-
 
 void::Game::powerBar()
 {
@@ -230,13 +228,10 @@ void::Game::powerBar()
 		}
 		if (m_exploded)
 		{
-			m_startBar = 0;
+			m_startBar = 0; // reset it back zero
 		}
 	}
-
-	
 	m_altitudeBar.setSize(sf::Vector2f(m_startBar, 25)); // updates the bar
-	
 }
 
 
@@ -284,5 +279,41 @@ void Game::explodsion() // explodsion that the circle appears
 		{
 			m_exploded = false; // set it to false
 		}
+	}
+}
+
+void Game::asteroidSpawn() // setups the asteroid
+{
+
+	if (!m_asteriod) // if not true
+	{
+
+		asteroidTrajectoryPoint += asteroidVelocity; // increment the line
+		
+		m_asteriodLine.append(asteroidSpawnPoint); // draw the start of the asteroid's line
+		m_asteriodLine.append(asteroidTrajectoryPoint); // the end of the asteroid line.
+	}
+	if (asteroidTrajectoryPoint.y > 550) // if the trajectory hits or go past 550
+	{
+		m_asteriodLine.clear(); // clear it
+		m_asteriod = true; // respawn it back
+	}
+
+
+}
+
+void Game::asteroidUpdate()
+{
+	if (m_asteriod)
+	{
+		asteroidSpawnPoint = sf::Vector2f{ static_cast<float> (rand() % 800), 0 }; // random spawn point for the asteroid
+		asteroidTrajectoryPoint = sf::Vector2f{ static_cast<float>(rand() % 800) , 550 }; // random trajectory point for the asteroid
+		m_asteroidDistanceVec = asteroidTrajectoryPoint - asteroidSpawnPoint; // the distance vector
+		asteroidVelocity = vectorUnitVector(m_asteroidDistanceVec); // the velocity of the line of the asteroid
+		asteroidVelocity += asteroidVelocity * 1.8f; // the speed of the asteroid
+		asteroidTrajectoryPoint = asteroidSpawnPoint + asteroidVelocity; // starts at the spawnpoint and moves to end point of the  asteroid
+
+		m_asteriod = false; // set it back to false
+
 	}
 }

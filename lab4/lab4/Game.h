@@ -46,6 +46,8 @@ private:
 	void explodsion(); // where the end of the click's position explodes  
 	void powerBar(); // the altitude bar where the range increases for the laser
 	void laserUpdate(); // drawing the laser
+	void asteroidSpawn();
+	void asteroidUpdate();
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -56,12 +58,16 @@ private:
 	sf::CircleShape m_explosion{ }; // draws a circle for the explodsion //side note the size is for testing
 	sf::Vector2i m_mouseClick{ 0.0f,0.0f }; // location of 1st mouse
 	sf::VertexArray m_line{ sf::Lines }; // line to be drawn
-	sf::Vector2f m_cannonBase{ 400.0f, 550.0f };
-	sf::Vector2f m_laserVec{ m_cannonBase };
+	sf::VertexArray m_asteriodLine{ sf::Lines }; // the lines of asteroid
+	sf::Vector2f m_cannonBase{ 400.0f, 550.0f }; // The cannon base
 	sf::Vector2f endPoint{}; // location of mouse click
-	sf::Vector2f m_laserVelocity = {0.0f,0.0f}; // the unit vector's result
-	sf::Vector2f distanceVec{}; // the distance of the cannon to the mouse click
+	sf::Vector2f m_laserVelocity = {0,0}; // the unit vector's result
+	sf::Vector2f m_distanceVec{}; // the distance of the cannon to the mouse click
 	sf::Vector2f m_laserPosition{}; // the line being drawn increment
+	sf::Vector2f asteroidSpawnPoint{}; // the spawning point of the asteroid
+	sf::Vector2f asteroidTrajectoryPoint{}; // the trajectory of the asteroid point
+	sf::Vector2f asteroidVelocity = {}; // the speed of the asteroid
+	sf::Vector2f m_asteroidDistanceVec{}; // finds the distance to the end point of the asteroid
 
 	float m_maxBar = 600.0f; // the maximium range of the laser
 	float m_startBar = 0.0f; // the starting point of the altitude bar
@@ -69,9 +75,12 @@ private:
 	float m_startRadius = 0.0f; // the starting radius of the explosion
 	float m_lenghtOfUnitVector = 0.0f; // sets the increment speed on the laser 
 
+
+
 	bool m_exitGame; // control exiting game
 	bool m_exploded = false; // its set to false
 	bool m_firedLaser = false; // stops the player from clicking after firing the laser
+	bool m_asteriod = true;
 
 
 };

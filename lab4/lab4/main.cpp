@@ -36,6 +36,9 @@
 #endif 
 
 #include "game.h"
+#include <ctime>
+
+
 
 
 
@@ -45,6 +48,18 @@
 /// <returns>zero</returns>
 int main()
 {
+
+	int numGen = 0; // My random number gen
+#ifdef _DEBUG 
+	srand(static_cast <unsigned int>(numGen)); // Always the same outcome when starting program
+
+#else
+
+	srand(static_cast <unsigned int>(time(NULL))); // Always a random numnber when running the program
+
+
+#endif // _DEBUG
+
 	Game game;
 	game.run();
 	return 0;
