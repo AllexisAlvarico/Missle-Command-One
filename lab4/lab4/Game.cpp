@@ -113,6 +113,7 @@ void Game::update(sf::Time t_deltaTime)
 	laserUpdate(); // the laser cannon drawing
 	asteroidUpdate(); // asteroid setup
 	asteroidSpawn(); // asteroid line drawing
+	laserCollision();
 
 
 	if (m_exitGame)
@@ -285,18 +286,26 @@ void Game::explodsion() // explodsion that the circle appears
 void Game::asteroidSpawn() // setups the asteroid
 {
 
-	if (!m_asteriod) // if not true
+	if (!m_asteroid) // if not true
 	{
+		if (!m_collided) // if not collided
+		{
+			asteroidTrajectoryPoint += asteroidVelocity; // increment the line
 
-		asteroidTrajectoryPoint += asteroidVelocity; // increment the line
-		
-		m_asteriodLine.append(asteroidSpawnPoint); // draw the start of the asteroid's line
-		m_asteriodLine.append(asteroidTrajectoryPoint); // the end of the asteroid line.
+			m_asteriodLine.append(asteroidSpawnPoint); // draw the start of the asteroid's line
+			m_asteriodLine.append(asteroidTrajectoryPoint); // the end of the asteroid line.
+		}
+		else
+		{
+			m_asteriodLine.clear(); // clear it
+			m_asteriod = true; // set it back to true
+			m_collided = false; // reset the asteroid
+		}
 	}
 	if (asteroidTrajectoryPoint.y > 550) // if the trajectory hits or go past 550
 	{
 		m_asteriodLine.clear(); // clear it
-		m_asteriod = true; // respawn it back
+		m_asteroid = true; // respawn it back
 	}
 
 
@@ -304,16 +313,26 @@ void Game::asteroidSpawn() // setups the asteroid
 
 void Game::asteroidUpdate()
 {
-	if (m_asteriod)
+	if (m_asteroid)
 	{
 		asteroidSpawnPoint = sf::Vector2f{ static_cast<float> (rand() % 800), 0 }; // random spawn point for the asteroid
 		asteroidTrajectoryPoint = sf::Vector2f{ static_cast<float>(rand() % 800) , 550 }; // random trajectory point for the asteroid
 		m_asteroidDistanceVec = asteroidTrajectoryPoint - asteroidSpawnPoint; // the distance vector
 		asteroidVelocity = vectorUnitVector(m_asteroidDistanceVec); // the velocity of the line of the asteroid
-		asteroidVelocity += asteroidVelocity * 1.8f; // the speed of the asteroid
-		asteroidTrajectoryPoint = asteroidSpawnPoint + asteroidVelocity; // starts at the spawnpoint and moves to end point of the  asteroid
+		asteroidVelocity += asteroidVelocity * 0.8f; // the speed of the asteroid
+		asteroidTrajectoryPoint = asteroidSpawnPoint + asteroidVelocity; // starts at the spawnpoint and moves to end point of the  asteroid22
+		m_asteroid = false; // set it back to false
 
-		m_asteriod = false; // set it back to false
+	}
+}
 
+void Game::laserCollision()
+{
+	sf::Vector2f laserExplosionCollision{ asteroidTrajectoryPoint.x - m_explosion.getPosition().x, asteroidTrajectoryPoint.y - m_explosion.getPosition().y }; // finds the distance and raduis of explosion and the line
+	float explosionArea = 0; // for the lenght
+	explosionArea = vectorLength(laserExplosionCollision); // set for the length of the collision
+	if (explosionArea < m_startRadius) // if explosion is less than the explosionArea do this
+	{
+		m_collided = true; // set it to true
 	}
 }

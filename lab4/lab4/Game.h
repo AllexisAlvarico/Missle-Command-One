@@ -46,8 +46,10 @@ private:
 	void explodsion(); // where the end of the click's position explodes  
 	void powerBar(); // the altitude bar where the range increases for the laser
 	void laserUpdate(); // drawing the laser
-	void asteroidSpawn();
-	void asteroidUpdate();
+	void asteroidSpawn(); // spawning the asteroid
+	void asteroidUpdate(); // sets up the asteroid
+	void laserCollision();
+
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -80,7 +82,8 @@ private:
 	bool m_exitGame; // control exiting game
 	bool m_exploded = false; // its set to false
 	bool m_firedLaser = false; // stops the player from clicking after firing the laser
-	bool m_asteriod = true;
+	bool m_asteroid = true; // respawns the asteroid
+	bool m_collided = false; // for the collision
 
 
 };
