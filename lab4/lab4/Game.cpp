@@ -8,6 +8,14 @@
 /// be saved or updated in gitHub throughout the project's creatation.
 /// Create parts of the project not all at once.
 /// ---------------------------------------------------------
+/// Refernces:
+/// Mantis Z.
+/// Helped me on my powerBar
+/// Micheal Rainsford.
+/// taught me to imcrement the line and draw it
+/// Michal K.
+/// fixed my asteroid to draw properly
+/// ------------------------------------------------------------
 /// Estinmated time: 5-7 hours
 /// Session 1 5:00pm to 7:00pm 3rd of December
 /// Session 2 7:30pm to 9:30pm 5th of December
@@ -15,10 +23,12 @@
 /// Session 4 2:00pm to 5:00pm 6th of December
 /// Session 5 4:00pm to 7:00pm 7th of December
 /// Session 6 3:30pm to 6:30pm 9th of December
-/// Actual time: 
+/// Session 7 4:30pm to 9:00pm 10th of December
+/// Session 8 11:30pm to 1:00am 10th-11th of December
+/// Actual time: 20hrs and 30mins
 /// Known Bugs: 
-/// can click and shoot the laser without
-/// waiting till it finished exploded.
+/// Can click and shoot the laser without waiting till it finished exploded.
+/// Can't figure out the powerBar to halfway the shot of the laser if the bar is halfway.
 /// </summary>  
 
 
@@ -114,6 +124,7 @@ void Game::update(sf::Time t_deltaTime)
 	asteroidUpdate(); // asteroid setup
 	asteroidSpawn(); // asteroid line drawing
 	laserCollision();
+	m_scoreText.setString("Score: " + std::to_string(score));
 
 
 	if (m_exitGame)
@@ -127,6 +138,10 @@ void Game::update(sf::Time t_deltaTime)
 /// </summary>
 void Game::render()
 {
+	m_window.clear();
+
+	if (!m_gameover)
+	{
 	m_window.clear(sf::Color::Black); // change's the window to black
 	m_window.draw(m_ground); // draws the ground
 	m_window.draw(m_cannon); // draws the cannon
@@ -134,13 +149,19 @@ void Game::render()
 	m_window.draw(m_asteriodLine);
 	m_window.draw(m_altitudeBar); // draws the bar
 	m_window.draw(m_altitudeText); // text is drawn
+	m_window.draw(m_scoreText); // text is drawn
 
-	if(m_laserPosition.y <= endPoint.y) // do this
-	{
-		m_window.draw(m_explosion); // draws the explodsion
+		if (m_laserPosition.y <= endPoint.y) // do this
+		{
+			m_window.draw(m_explosion); // draws the explodsion
+		}
+
 	}
-	
-
+	else 
+	{
+		m_window.draw(m_gameoverText);// text is drawn
+		m_window.draw(m_scoreText);// text is drawn
+	}
 	m_window.display();
 }
 
@@ -159,6 +180,19 @@ void Game::setupFontAndText()
 	m_altitudeText.setPosition(10, 555);  // set the position
 	m_altitudeText.setCharacterSize(24); // the character size
 	m_altitudeText.setFillColor(sf::Color::White); // The text's colour
+
+	
+	m_scoreText.setFont(m_ArialBlackfont); // set its font
+	m_scoreText.setPosition(550, 555);  // set the position
+	m_scoreText.setCharacterSize(24); // the character size
+	m_scoreText.setFillColor(sf::Color::White); // The text's colour
+
+
+	m_gameoverText.setFont(m_ArialBlackfont); // set its font
+	m_gameoverText.setString("Gameover"); // displays the text
+	m_gameoverText.setPosition(250, 250);  // set the position
+	m_gameoverText.setCharacterSize(50); // the character size
+	m_gameoverText.setFillColor(sf::Color::Red); // The text's colour
 }
 
 /// <summary>
@@ -232,6 +266,30 @@ void::Game::powerBar()
 			m_startBar = 0; // reset it back zero
 		}
 	}
+	//if (!m_chargeBar)
+	//{
+	//	if (m_maxBar <= m_maxBar)
+	//	{
+	//		m_laserPosition = m_laserVelocity;
+	//	}
+
+	//	if (m_startBar <= m_maxBar / 2)
+	//	{
+	//		m_laserPosition = m_laserVelocity / 2.0f;
+	//	}
+
+	//	if (m_startBar < m_maxBar / 3)
+	//	{
+	//		m_laserPosition = m_laserVelocity / 3.0f;
+	//	}
+
+	//	if (m_startBar < m_maxBar / 4)
+	//	{
+	//		m_laserPosition = m_laserVelocity / 4.0f;
+	//	}
+
+	//}
+
 	m_altitudeBar.setSize(sf::Vector2f(m_startBar, 25)); // updates the bar
 }
 
@@ -259,6 +317,7 @@ void::Game::laserUpdate()
 		{
 	
 			m_exploded = false; // set the explosion back to false
+
 			
 		}
 	}
@@ -279,6 +338,7 @@ void Game::explodsion() // explodsion that the circle appears
 		else
 		{
 			m_exploded = false; // set it to false
+		/*	m_chargeBar = true;*/
 		}
 	}
 }
@@ -298,15 +358,18 @@ void Game::asteroidSpawn() // setups the asteroid
 		else
 		{
 			m_asteriodLine.clear(); // clear it
-			m_asteriod = true; // set it back to true
+			m_asteroid = true; // set it back to true
 			m_collided = false; // reset the asteroid
+			score += 5; //adds 10
 		}
 	}
 	if (asteroidTrajectoryPoint.y > 550) // if the trajectory hits or go past 550
 	{
 		m_asteriodLine.clear(); // clear it
 		m_asteroid = true; // respawn it back
+		m_gameover = true; // gameover
 	}
+	
 
 
 }
